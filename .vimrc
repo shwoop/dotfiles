@@ -11,6 +11,7 @@ Plugin 'sjl/gundo.vim'              " visualize undo list
 Plugin 'Valloric/YouCompleteMe'     " code completion
 Plugin 'scrooloose/syntastic'       " syntax check
 Plugin 'altercation/vim-colors-solarized'   " solarized colourscheme
+Plugin 'scrooloose/nerdtree'        " NERDtree file explorer
 
 call vundle#end()                   " required
 
