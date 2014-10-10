@@ -23,7 +23,8 @@ let g:solarized_termcolors=16
 colorscheme solarized
 
 set hidden                          " quit with hidden buffers
-set nu                              " line numbers
+set relativenumber                  " relative line numbers
+set nu                              " classic line number follows cursor
 set ts=4 sts=4 sw=4 expandtab       " spaces rather than tabs
 set shiftround                      " indent by sw
 set autoindent                      " auto indenting
