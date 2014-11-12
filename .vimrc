@@ -5,6 +5,8 @@ filetype off                        " no filetype detection
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+" git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+" vim +PluginInstall +qall
 
 Plugin 'gmarik/Vundle.vim'          " manage vundle
 Plugin 'sjl/gundo.vim'              " visualize undo list
