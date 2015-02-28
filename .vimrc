@@ -1,7 +1,6 @@
 set nocompatible                    " be improved
 filetype off                        " no filetype detection
 
-
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -12,11 +11,11 @@ Plugin 'gmarik/Vundle.vim'          " manage vundle
 Plugin 'sjl/gundo.vim'              " visualize undo list
 Plugin 'Valloric/YouCompleteMe'     " code completion
 Plugin 'scrooloose/syntastic'       " syntax check
+Plugin 'scrooloose/nerdtree'        " file explorer
+Plugin 'Glench/Vim-Jinja2-Syntax'   " jinja2 template syntax highlights
 Plugin 'altercation/vim-colors-solarized'   " solarized colourscheme
-Plugin 'scrooloose/nerdtree'        " NERDtree file explorer
 
 call vundle#end()                   " required
-
 
 filetype plugin indent on           " filetype based indentation
 syntax on                           " syntax
@@ -36,3 +35,5 @@ set cc=80                           " highlight lines over 80 char
 set tags=./tags;                    " ctags
 set foldmethod=indent foldlevel=99  " Python compatible folding
 
+let NERDTreeIgnore = ['\.pyc$']     " nerdtree ignore list
+command NT NERDTree                 " remap NODETree to NT for lazE
