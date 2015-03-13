@@ -37,3 +37,4 @@ set foldmethod=indent foldlevel=99  " Python compatible folding
 
 let NERDTreeIgnore = ['\.pyc$']     " nerdtree ignore list
 command NT NERDTree                 " remap NODETree to NT for lazE
+command Nt NERDTree
