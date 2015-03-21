@@ -32,6 +32,7 @@ set shiftround                      " indent by sw
 set autoindent                      " auto indenting
 set list  listchars=tab:▸\ ,eol:¬   " mark tabs and eol
 set cc=80                           " highlight lines over 80 char
+highlight ColorColumn ctermbg=10    " green column at 80
 set tags=./tags;                    " ctags
 set foldmethod=indent foldlevel=99  " Python compatible folding
 
