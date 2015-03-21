@@ -4,8 +4,23 @@ filetype off                        " no filetype detection
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+
+" PLUGIN DEPLOYMENT COMMANDS
+
+" Install Vundle
 " git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+" Have Vundle install the below plugins
 " vim +PluginInstall +qall
+
+" YouCompleteMe needs to be built and depends cmake
+" apt-get install cmake
+" cd ~/.vim/bundle/YouCompleteMe
+" ./install.sh --clang-completer
+
+" Don't forget Ctags
+" apt-get install ctags
+" cd <repo>/ && ctags -R .
 
 Plugin 'gmarik/Vundle.vim'          " manage vundle
 Plugin 'sjl/gundo.vim'              " visualize undo list
