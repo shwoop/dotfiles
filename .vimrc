@@ -4,8 +4,23 @@ filetype off                        " no filetype detection
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+
+" PLUGIN DEPLOYMENT COMMANDS
+
+" Install Vundle
 " git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+" Have Vundle install the below plugins
 " vim +PluginInstall +qall
+
+" YouCompleteMe needs to be built and depends cmake
+" apt-get install cmake
+" cd ~/.vim/bundle/YouCompleteMe
+" ./install.sh --clang-completer
+
+" Don't forget Ctags
+" apt-get install ctags
+" cd <repo>/ && ctags -R .
 
 Plugin 'gmarik/Vundle.vim'          " manage vundle
 Plugin 'sjl/gundo.vim'              " visualize undo list
@@ -37,7 +52,8 @@ set ts=4 sts=4 sw=4 expandtab       " spaces rather than tabs
 set shiftround                      " indent by sw
 set autoindent                      " auto indenting
 set list  listchars=tab:▸\ ,eol:¬   " mark tabs and eol
-set cc=120                          " highlight lines over 120 char
+set cc=80                           " highlight lines over 80 char
+highlight ColorColumn ctermbg=10    " green column at 80
 set tags=./tags;                    " ctags
 set foldmethod=indent foldlevel=99  " Python compatible folding
 
