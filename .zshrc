@@ -80,5 +80,25 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/g
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# android sdk path
+export ANDROID_HOME="/opt/android-sdk-linux"
+export PATH="$PATH:/opt/android-sdk-linux/tools"
+export PATH="$PATH:/opt/android-sdk-linux/platform-tools"
+export PATH="$PATH:/opt/android-sdk-linux/build"
+
+# jdk
+export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+export PATH="$PATH:/usr/lib/jvm/java-7-openjdk-amd64/bin"
+
 # virtualenv
 source /usr/local/bin/virtualenvwrapper.sh
+
+# django debug flag
+export DJ_DEBUG="True"
+
+alias rgrep="rgrep --color"
+alias apt-up="sudo apt-get update -qq && sudo apt-get upgrade"
+alias g="git"
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
