@@ -1,15 +1,19 @@
 # Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+export ZSH=/home/alistair/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-# Nice themes: theunraveler, norm, gallois
-ZSH_THEME="gallois"
+# ZSH_THEME="gallois"
+ZSH_THEME="alistair"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
@@ -46,14 +50,15 @@ ZSH_THEME="gallois"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
-source $ZSH/oh-my-zsh.sh
+# plugins=(git)
+plugins=(python git mercurial)
 
 # User configuration
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
 # export MANPATH="/usr/local/man:$MANPATH"
+
+source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -79,16 +84,17 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/g
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+#
 
-# android sdk path
-export ANDROID_HOME="/opt/android-sdk-linux"
-export PATH="$PATH:/opt/android-sdk-linux/tools"
-export PATH="$PATH:/opt/android-sdk-linux/platform-tools"
-export PATH="$PATH:/opt/android-sdk-linux/build"
+# # android sdk path
+# export ANDROID_HOME="/opt/android-sdk-linux"
+# export PATH="$PATH:/opt/android-sdk-linux/tools"
+# export PATH="$PATH:/opt/android-sdk-linux/platform-tools"
+# export PATH="$PATH:/opt/android-sdk-linux/build"
 
-# jdk
-export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
-export PATH="$PATH:/usr/lib/jvm/java-7-openjdk-amd64/bin"
+# # jdk
+# export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+# export PATH="$PATH:/usr/lib/jvm/java-7-openjdk-amd64/bin"
 
 # virtualenv
 source /usr/local/bin/virtualenvwrapper.sh
@@ -96,9 +102,41 @@ source /usr/local/bin/virtualenvwrapper.sh
 # django debug flag
 export DJ_DEBUG="True"
 
-alias rgrep="rgrep --color"
 alias apt-up="sudo apt-get update -qq && sudo apt-get upgrade"
 alias g="git"
 
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
+# ELASTICHOSTS ALIASES
+
+# SSH aliases
+alias ewww='ssh elastic-www@alistair.elastichosts.com'
+alias eapi='ssh elastic-api@alistair.elastichosts.com'
+alias eftp='ssh elastic-ftp@alistair.elastichosts.com'
+
+# Function to rsync and restart cluster (from Mike)
+esync() {
+  echo "hg qref is called.."
+  hg qref
+  if [ "$1" == "er" ]; then
+    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-www@alistair.elastichosts.com:hg/
+    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-api@alistair.elastichosts.com:hg/
+    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-ftp@alistair.elastichosts.com:hg/
+    echo "Restarting the web server..."
+    echo "Shutting down: running ~/.shutdownrc"
+    ssh elastic-www@alistair.elastichosts.com '/bin/bash -l -c "/home/elastic-www/.shutdownrc"'
+    echo "Starting up: running ~/.startuprc"
+    ssh elastic-www@alistair.elastichosts.com '/bin/bash -l -c "/home/elastic-www/.startuprc"'
+    echo "Server Restarted"
+  elif [ "$1" == "r" ]; then
+    echo "User r to restart the webserver"
+    echo "Restarting the web server..."
+    echo "Shutting down: running ~/.shutdownrc"
+    ssh elastic-www@alistair.elastichosts.com '/bin/bash -l -c "/home/elastic-www/.shutdownrc"'
+    echo "Starting up: running ~/.startuprc"
+    ssh -t elastic-www@alistair.elastichosts.com '/bin/bash -l -c "/home/elastic-www/.startuprc"'
+    echo "Server Restarted"
+  elif [ -z "$*" ]; then
+    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-www@alistair.elastichosts.com:hg/
+    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-api@alistair.elastichosts.com:hg/
+    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-ftp@alistair.elastichosts.com:hg/
+  fi
+}
