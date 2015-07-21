@@ -32,10 +32,11 @@ Plugin 'altercation/vim-colors-solarized'   " solarized colourscheme
 Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'ervandew/supertab'
+Plugin 'rking/ag.vim'               " silver searcher plugin
 
 call vundle#end()                   " required
 
-filetype plugin indent on           " filetype based indentation
+" filetype plugin indent on           " filetype based indentation
 syntax on                           " syntax
 set background=dark                 " dark style fonts
 set t_Co=256                        " fix terminal colours
@@ -48,7 +49,7 @@ let g:syntastic_javascript_checkers = ['jshint']
 set hidden                          " quit with hidden buffers
 set relativenumber                  " relative line numbers
 set nu                              " classic line number follows cursor
-set ts=4 sts=4 sw=4 expandtab       " spaces rather than tabs
+set ts=2 sts=2 sw=2 expandtab       " spaces rather than tabs
 set shiftround                      " indent by sw
 set autoindent                      " auto indenting
 set list  listchars=tab:▸\ ,eol:¬   " mark tabs and eol
@@ -77,4 +78,7 @@ au Syntax * RainbowParenthesesLoadBraces
 let g:SuperTabDefaultCompletionType = "context"
 
 " jedi config
-" let g:jedi#popup_on_dot = 0
+let g:jedi#popup_on_dot = 0
+
+" silver searcher
+let g:ag_working_path_mode="r"      " search from root of project
