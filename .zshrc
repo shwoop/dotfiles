@@ -97,12 +97,12 @@ source $ZSH/oh-my-zsh.sh
 # export PATH="$PATH:/usr/lib/jvm/java-7-openjdk-amd64/bin"
 
 # virtualenv
-source /usr/local/bin/virtualenvwrapper.sh
+source /usr/bin/virtualenvwrapper.sh
 
 # django debug flag
 export DJ_DEBUG="True"
 
-alias apt-up="sudo apt-get update -qq && sudo apt-get upgrade"
+alias apt-up="sudo apt-get update -qq && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y && sudo apt autoremove -y"
 alias g="git"
 
 # ELASTICHOSTS ALIASES
@@ -112,31 +112,78 @@ alias ewww='ssh elastic-www@alistair.elastichosts.com'
 alias eapi='ssh elastic-api@alistair.elastichosts.com'
 alias eftp='ssh elastic-ftp@alistair.elastichosts.com'
 
-# Function to rsync and restart cluster (from Mike)
-esync() {
-  echo "hg qref is called.."
-  hg qref
-  if [ "$1" == "er" ]; then
-    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-www@alistair.elastichosts.com:hg/
-    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-api@alistair.elastichosts.com:hg/
-    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-ftp@alistair.elastichosts.com:hg/
-    echo "Restarting the web server..."
-    echo "Shutting down: running ~/.shutdownrc"
-    ssh elastic-www@alistair.elastichosts.com '/bin/bash -l -c "/home/elastic-www/.shutdownrc"'
-    echo "Starting up: running ~/.startuprc"
-    ssh elastic-www@alistair.elastichosts.com '/bin/bash -l -c "/home/elastic-www/.startuprc"'
-    echo "Server Restarted"
-  elif [ "$1" == "r" ]; then
-    echo "User r to restart the webserver"
-    echo "Restarting the web server..."
-    echo "Shutting down: running ~/.shutdownrc"
-    ssh elastic-www@alistair.elastichosts.com '/bin/bash -l -c "/home/elastic-www/.shutdownrc"'
-    echo "Starting up: running ~/.startuprc"
-    ssh -t elastic-www@alistair.elastichosts.com '/bin/bash -l -c "/home/elastic-www/.startuprc"'
-    echo "Server Restarted"
-  elif [ -z "$*" ]; then
-    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-www@alistair.elastichosts.com:hg/
-    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-api@alistair.elastichosts.com:hg/
-    rsync -rltpogDvzH -e ssh /home/alistair/repos/EH/code/ elastic-ftp@alistair.elastichosts.com:hg/
-  fi
+PATH="$PATH:/home/alistair/repos/arcanist/bin/"
+
+ESYNC_TARGET=alistair.elastichosts.com
+ESYNC_REPO=code
+esync:update_cluster() {
+  echo "SYNCING DATA  ::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+  rsync -rltpogDvzH --delete -e ssh ~alistair/repos/eh/$ESYNC_REPO/ elastic-www@$ESYNC_TARGET:hg/
+  rsync -rltpogDvzH --delete -e ssh ~/repos/eh/$ESYNC_REPO/ elastic-api@$ESYNC_TARGET:hg/
+  rsync -rltpogDvzH --delete -e ssh ~/repos/eh/$ESYNC_REPO/ elastic-ftp@$ESYNC_TARGET:hg/
+  echo "SYNCED DATA  :::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
 }
+esync:restart_services() {
+  echo "RESTARTING THE WEB SERVER  :::::::::::::::::::::::::::::::::::::::::::"
+  ssh elastic-www@$ESYNC_TARGET '/bin/bash -l -c "/home/elastic-www/.shutdownrc"'
+  ssh elastic-www@$ESYNC_TARGET '/bin/bash -l -c "/home/elastic-www/.startuprc"'
+  echo "WEB SERVER RESTARTED  ::::::::::::::::::::::::::::::::::::::::::::::::"
+  echo "RESTARTING THE API SERVER  :::::::::::::::::::::::::::::::::::::::::::"
+  ssh elastic-api@$ESYNC_TARGET '/bin/bash -l -c "/home/elastic-api/.shutdownrc"'
+  ssh elastic-api@$ESYNC_TARGET '/bin/bash -l -c "/home/elastic-api/.startuprc"'
+  echo "API SERVER RESTARTED  ::::::::::::::::::::::::::::::::::::::::::::::::"
+  echo "RESTARTING THE FTP SERVER  :::::::::::::::::::::::::::::::::::::::::::"
+  ssh elastic-ftp@$ESYNC_TARGET '/bin/bash -l -c "/home/elastic-ftp/.shutdownrc"'
+  ssh elastic-ftp@$ESYNC_TARGET '/bin/bash -l -c "/home/elastic-ftp/.startuprc"'
+  echo "FTP SERVER RESTARTED  ::::::::::::::::::::::::::::::::::::::::::::::::"
+}
+esync:rebuild_assets() {
+  echo "REBUILDING ASSETS"
+  ssh elastic-www@$ESYNC_TARGET '/bin/bash -l -c "/home/elastic-www/www/manage.py assets build"'
+  echo "REBUILT ASSETS  ::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+}
+esync() {
+  emulate bash
+  echo "HG QREF IS CALLED ::::::::::::::::::::::::::::::::::::::::::::::::::::"
+  # hg qref
+  if [ -z $1 ]; then
+    esync:update_cluster
+  elif [ "$1" == "erd" ]; then
+    esync:update_cluster
+    esync:rebuild_assets
+    esync:restart_services
+  elif [ "$1" == "er" ]; then
+    esync:update_cluster
+    esync:restart_services
+  elif [ "$1" == "e" ]; then
+    esync:update_cluster
+  elif [ "$1" == "r" ]; then
+    esync:restart_services
+  elif [ "$1" == "d" ]; then
+    esync:rebuild_assets
+  fi
+  echo "FIN  :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+  emulate zsh
+}
+
+export EHURI=https://api.alistair.elastichosts.com/
+export EHAUTH=00000000-0000-0000-0000-000000000000:guildwars
+
+export GOPATH=~/go
+# export GOROOT=/usr/lib/go-1.12
+PATH="$PATH:$GOPATH/bin"
+
+update-host() {
+  setopt ksh_glob
+  rsync -rltpogDvzH --delete -e ssh ~alistair/repos/eh/code/host/lib/!(version).sh $1:/lib/elastic/lib/
+  rsync -rltpogDvzH --delete -e ssh ~alistair/repos/eh/code/host/cmd/ $1:/lib/elastic/cmd/
+}
+
+alias uhvm="update-host myvmhost"
+alias uhcont="update-host myconthost"
+  
+export PATH=$PATH:/home/alistair/.local/bin
+
+# git config --global core.excludesfile ~/.gitignore_global
+
+source ~/.cargo/env

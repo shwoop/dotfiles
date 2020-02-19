@@ -16,43 +16,50 @@ call vundle#begin()
 " YouCompleteMe needs to be built and depends cmake
 " apt-get install cmake
 " cd ~/.vim/bundle/YouCompleteMe
-" ./install.sh --clang-completer
+" ./install.py --clang-completer --go-completer --racer-completer
 
 " Don't forget Ctags
 " apt-get install ctags
 " cd <repo>/ && ctags -R .
 
 Plugin 'gmarik/Vundle.vim'          " manage vundle
-Plugin 'sjl/gundo.vim'              " visualize undo list
+" lugin 'sjl/gundo.vim'              " visualize undo list
 Plugin 'Valloric/YouCompleteMe'     " code completion
 Plugin 'scrooloose/syntastic'       " syntax check
 Plugin 'scrooloose/nerdtree'        " file explorer
-Plugin 'Glench/Vim-Jinja2-Syntax'   " jinja2 template syntax highlights
+" Plugin 'Glench/Vim-Jinja2-Syntax'   " jinja2 template syntax highlights
 Plugin 'altercation/vim-colors-solarized'   " solarized colourscheme
 Plugin 'kien/rainbow_parentheses.vim'
-Plugin 'davidhalter/jedi-vim'
-Plugin 'ervandew/supertab'
-Plugin 'rking/ag.vim'               " silver searcher plugin
+" Plugin 'davidhalter/jedi-vim'
+" Plugin 'ervandew/supertab'
+" Plugin 'rking/ag.vim'               " silver searcher plugin
+" Plugin 'nvie/vim-flake8'            " flake8 plugin (f7)
+" Plugin 'fatih/vim-go'
+Plugin 'rust-lang/rust.vim'
 
 call vundle#end()                   " required
 
-" filetype plugin indent on           " filetype based indentation
-syntax on                           " syntax
+filetype plugin indent on           " filetype based indentation
+syntax enable                          " syntax
 set background=dark                 " dark style fonts
-set t_Co=256                        " fix terminal colours
-let g:solarized_termcolors=16
+" set t_Co=256                        " fix terminal colours
+set t_Co=16                         " fix terminal colours
+" let g:solarized_termcolors=16
+let g:solarized_termcolors=256
 colorscheme solarized
 
 " jshint lint for js files
 let g:syntastic_javascript_checkers = ['jshint']
 
+" let g:syntastic_python_checkers = ["flake8", "mypy"]
+
 set hidden                          " quit with hidden buffers
 set relativenumber                  " relative line numbers
 set nu                              " classic line number follows cursor
-set ts=2 sts=2 sw=2 expandtab       " spaces rather than tabs
+" set ts=2 sts=2 sw=2 expandtab       " spaces rather than tabs
 set shiftround                      " indent by sw
 set autoindent                      " auto indenting
-set list  listchars=tab:▸\ ,eol:¬   " mark tabs and eol
+" set list  listchars=tab:▸\ ,eol:¬   " mark tabs and eol
 set cc=80                           " highlight lines over 80 char
 highlight ColorColumn ctermbg=10    " green column at 80
 set tags=./tags;                    " ctags
@@ -75,10 +82,19 @@ au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
 
 " supertab config
-let g:SuperTabDefaultCompletionType = "context"
+" let g:SuperTabDefaultCompletionType = "context"
 
 " jedi config
-let g:jedi#popup_on_dot = 0
+" let g:jedi#popup_on_dot = 0
 
-" silver searcher
-let g:ag_working_path_mode="r"      " search from root of project
+" let g:ag_working_path_mode="r"     " search from root of project
+
+autocmd BufEnter * :syntax sync fromstart
+
+set guifont=Monospace\ 12
+" imap ii <Esc>
+let g:deoplete#enable_at_startup = 1
+
+let g:ycm_auto_trigger = 1
+
+set rtp+=~/.vim/bundle/YouCompleteMe
